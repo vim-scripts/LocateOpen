@@ -1,0 +1,34 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=858
+
+This script uses slocate (or a similar application) to allow the user to open a file without having to enter a path. If multiple files are found the user is given the choice of which file to open.
+
+Usage:
+
+:LocateEdit somefile.txt
+:LocateSplit somefile.txt
+:LocateSource somefile.vim
+:LocateRead somefile.txt
+
+Options:
+
+To enable case insensitive mode:
+:let g:locateopen_ignorecase = 1
+
+To disable smart case mode:
+:let g:locateopen_smartcase = 0
+
+To enable always prompt mode:
+:let g:locateopen_alwaysprompt = 1
+
+Requirements:
+
+You need 'slocate' or a similar application. This probably means that you need to be on Linux, or possibly another Unix-like OS. Most Linux distributions seem to ship with slocate by default, so this probably isn't a problem. This script will almost certainly not work on Windows, sorry.
+
+An up-to-date locate database helps, too. If you find that this script gives out of date information (eg doesn't list some files or still shows old files), you may want to consider putting updatedb on a cron...
+
+Finally, I've not tested on Vim below 6.2.
+
+Possible Todo List:
+
+* Help document
+* Less inefficient 'array' handling
