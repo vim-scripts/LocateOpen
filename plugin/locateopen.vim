@@ -1,5 +1,5 @@
 " Name:          locateopen.vim (global plugin)
-" Version:       0.6.1
+" Version:       0.6.2
 " Author:        Ciaran McCreesh <ciaranm at gentoo.org>
 " Updates:       http://dev.gentoo.org/~ciaranm/vim/
 " Purpose:       Open a file for editing without knowing the file's path
@@ -7,8 +7,9 @@
 " License:       You may redistribute this plugin under the same terms as Vim
 "                itself.
 "
-" Usage:         :LocateEdit somefile.txt
-"                :LocateSplit somefile.txt
+" Usage:         :LocateEdit somefile.txt           " find and edit
+"                :LocateSplit somefile.txt          " find and split
+"                :let g:locateopen_ignorecase = 1   " enable ignore case mode
 "
 " Requirements:  Needs 'slocate' or a compatible program. You'll also need an
 "                up-to-date locate database. Most systems seem to run updatedb
@@ -16,6 +17,9 @@
 "                created files may not show up because of this.
 "
 " ChangeLog:
+"     v0.6.2 (20031219)
+"         * case insensitive mode
+"
 "     v0.6.1 (20031215)
 "         * slocate doesn't return sensible return codes on failure, so a
 "           better error check is needed
@@ -23,10 +27,13 @@
 "     v0.6.0 (20031215)
 "         * first release to the Real World
 
-let s:slocate_app        = "slocate"
-let s:slocate_args       = "-r"
-let s:slocate_cmd        = s:slocate_app . " " . s:slocate_args
-let s:path_seperator     = "/"
+let s:slocate_app           = "slocate"
+let s:slocate_args          = "-r"
+let s:slocate_i_args        = "-i"
+let s:slocate_cmd           = s:slocate_app . " " . s:slocate_args
+let s:path_seperator        = "/"
+
+let g:locateopen_ignorecase = 0
 
 " Escape str for passing to slocate -r, so that magic characters aren't
 " interpreted as regex metachars.
@@ -38,8 +45,13 @@ endfun
 " Find file, and if there are several then ask the user which one is
 " intended.
 function! s:LocateFile(file)
-    let l:options = system(s:slocate_cmd . " '" . s:path_seperator .
-        \ s:EscapeForLocate(a:file) . "$'")
+    let l:command = s:slocate_app
+    if g:locateopen_ignorecase
+        let l:command = l:command . " " . s:slocate_i_args
+    endif
+    let l:command = l:command . " " . s:slocate_args . " '" .
+        \ s:path_seperator . s:EscapeForLocate(a:file) . "$'"
+    let l:options = system(l:command)
 
     " Do we have an error? Please please please give me suggestions on how to
     " detect this better... This probably won't work on non-English systems.
