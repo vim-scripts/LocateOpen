@@ -1,5 +1,5 @@
 " Name:          locateopen.vim (global plugin)
-" Version:       0.8.0
+" Version:       1.1
 " Author:        Ciaran McCreesh <ciaranm at gentoo.org>
 " Updates:       http://dev.gentoo.org/~ciaranm/vim/
 " Purpose:       Open a file for editing without knowing the file's path
@@ -9,6 +9,7 @@
 "
 " Usage:         :LocateEdit somefile.txt           " find and edit
 "                :LocateSplit somefile.txt          " find and split
+"                :LocateRead somefile.txt           " find and read
 "                :LocateSource somefile.vim         " find and source
 "
 " Configuration:
@@ -20,24 +21,6 @@
 "                up-to-date locate database. Most systems seem to run updatedb
 "                on a daily cron, so you should be okay. Note that recently
 "                created files may not show up because of this.
-"
-" ChangeLog:
-"     v0.8.0 (20040113)
-"         * 'smart' case mode -- if ignorecase is 0 and no matches are found,
-"         try again with ignorecase enabled
-"         * LocateSource somefile.vim added
-"         * 'always prompt' mode -- if 1, shows a menu even if only one item is
-"         found (default is to automatically open for one match)
-"
-"     v0.6.2 (20031219)
-"         * case insensitive mode
-"
-"     v0.6.1 (20031215)
-"         * slocate doesn't return sensible return codes on failure, so a
-"           better error check is needed
-"
-"     v0.6.0 (20031215)
-"         * first release to the Real World
 
 let s:slocate_app             = "slocate"
 let s:slocate_args            = "-r"
@@ -141,9 +124,15 @@ function! LocateSource(file)
     call s:LocateRun('source', a:file)
 endfun
 
+" Find a file and :read it
+function! LocateRead(file)
+    call s:LocateRun('read', a:file)
+endfun
+
 " Do magicky export things
 command! -nargs=1 LocateEdit   :call LocateEdit(<q-args>)
 command! -nargs=1 LocateSplit  :call LocateSplit(<q-args>)
 command! -nargs=1 LocateSource :call LocateSource(<q-args>)
+command! -nargs=1 LocateRead   :call LocateRead(<q-args>)
 
 " vim: set tw=80 ts=4 et :
