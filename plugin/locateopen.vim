@@ -1,7 +1,6 @@
 " Name:          locateopen.vim (global plugin)
-" Version:       1.1
+" Version:       1.2
 " Author:        Ciaran McCreesh <ciaranm at gentoo.org>
-" Updates:       http://dev.gentoo.org/~ciaranm/vim/
 " Purpose:       Open a file for editing without knowing the file's path
 "
 " License:       You may redistribute this plugin under the same terms as Vim
@@ -22,7 +21,14 @@
 "                on a daily cron, so you should be okay. Note that recently
 "                created files may not show up because of this.
 
-let s:slocate_app             = "slocate"
+if executable("slocate")
+    let s:slocate_app         = "slocate"
+elseif executable("rlocate")
+    let s:slocate_app         = "rlocate"
+else
+    finish
+endif
+
 let s:slocate_args            = "-r"
 let s:slocate_i_args          = "-i"
 let s:slocate_cmd             = s:slocate_app . " " . s:slocate_args
